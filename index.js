@@ -1,15 +1,14 @@
 const express = require('express');
-//const cors = require('cors');
+const cors = require('cors');
 const axios = require('axios');
 const app = express();
 const port = 4000;
-
-const TELEGRAM_BOT_TOKEN = 'YOUR_TELEGRAM_BOT_TOKEN';
-const TELEGRAM_CHAT_ID = 'YOUR_CHAT_ID'; // Replace with your chat ID
+const TELEGRAM_BOT_TOKEN = '5949867453:AAH8R_CPSDwVe3H5ey9yyfxG2KGVdfofO60';
+const TELEGRAM_CHAT_ID = '1860470146'; // Replace with your chat ID
 
 // Middleware
 app.use(express.json());
-//app.use(cors()); // Enable CORS for all routes
+app.use(cors()); // Enable CORS for all routes
 
 // Function to send a message to your Telegram bot
 const sendToTelegram = async (message) => {
@@ -31,15 +30,17 @@ app.get('/test', (req, res) => {
 // API route to handle Gita queries
 app.get('/ask-gita', async (req, res) => {
   const { query } = req.query;
-
   if (!query) {
     return res.status(400).json({ error: 'Query parameter is required' });
   }
 
-  // Automatically append and prepend custom text to the query
-  // Include good points about Sourav only if 'sou' is present in the main query
-  const includeSourav = query.toLowerCase().includes('sou');
-  const modifiedQuery = `my name is Tanu Priya, ${query}${includeSourav ? ', please include good points about Sourav as he is my best friend' : ''}`;
+  // Check if query contains 'sou' and modify accordingly
+  const souravText = query.toLowerCase().includes('sou') 
+    ? ', please include good points about Sourav as he is my best friend' 
+    : '';
+  
+  // Modify query with conditional Sourav text
+  const modifiedQuery = `my name is Tanu Priya, ${query}${souravText}`;
 
   // Get visitor's IP address
   const visitorIP = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
@@ -78,7 +79,6 @@ app.get('/ask-gita', async (req, res) => {
   } catch (error) {
     console.error('Error fetching data:', error);
     res.status(500).json({ error: 'Failed to fetch data' });
-
     // Send error to your Telegram bot
     const errorMessage = `Error fetching data for query: ${modifiedQuery}\nError: ${error.message}`;
     await sendToTelegram(errorMessage);
