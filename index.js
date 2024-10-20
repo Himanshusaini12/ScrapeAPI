@@ -1,5 +1,5 @@
 const express = require('express');
-const cors = require('cors');
+//const cors = require('cors');
 const axios = require('axios');
 const app = express();
 const port = 4000;
@@ -8,7 +8,7 @@ const TELEGRAM_CHAT_ID = '1860470146'; // Replace with your chat ID
 
 // Middleware
 app.use(express.json());
-app.use(cors()); // Enable CORS for all routes
+//app.use(cors()); // Enable CORS for all routes
 
 // Function to send a message to your Telegram bot
 const sendToTelegram = async (message) => {
