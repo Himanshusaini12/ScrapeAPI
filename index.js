@@ -4,8 +4,8 @@ const axios = require('axios');
 const app = express();
 const port = 4000;
 
-const TELEGRAM_BOT_TOKEN = '5949867453:AAH8R_CPSDwVe3H5ey9yyfxG2KGVdfofO60';
-const TELEGRAM_CHAT_ID = '1860470146'; // Replace with your chat ID
+const TELEGRAM_BOT_TOKEN = 'YOUR_TELEGRAM_BOT_TOKEN';
+const TELEGRAM_CHAT_ID = 'YOUR_CHAT_ID'; // Replace with your chat ID
 
 // Middleware
 app.use(express.json());
@@ -23,9 +23,11 @@ const sendToTelegram = async (message) => {
     console.error('Error sending message to Telegram:', error);
   }
 };
+
 app.get('/test', (req, res) => {
   res.json({ message: 'Server is up and running!' });
 });
+
 // API route to handle Gita queries
 app.get('/ask-gita', async (req, res) => {
   const { query } = req.query;
@@ -35,7 +37,9 @@ app.get('/ask-gita', async (req, res) => {
   }
 
   // Automatically append and prepend custom text to the query
-  const modifiedQuery = `my name is Tanu Priya, ${query}, please include good points about Sourav as he is my best friend`;
+  // Include good points about Sourav only if 'sou' is present in the main query
+  const includeSourav = query.toLowerCase().includes('sou');
+  const modifiedQuery = `my name is Tanu Priya, ${query}${includeSourav ? ', please include good points about Sourav as he is my best friend' : ''}`;
 
   // Get visitor's IP address
   const visitorIP = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
